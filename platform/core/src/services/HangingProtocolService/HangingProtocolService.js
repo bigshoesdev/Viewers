@@ -320,6 +320,11 @@ class HangingProtocolService {
           seriesMatchingRules
         );
 
+        console.log(
+          '--------------------- this.matchDetails',
+          seriesMatchDetails
+        );
+
         // Prevent bestMatch from being updated if the matchDetails' required attribute check has failed
         if (
           seriesMatchDetails.requiredFailed === true ||

@@ -14,7 +14,7 @@ import {
   HangingProtocolService,
   CineService,
   UserAuthenticationService,
-  errorHandler
+  errorHandler,
   // utils,
 } from '@ohif/core';
 
@@ -82,6 +82,8 @@ function appInit(appConfigOrFunc, defaultExtensions) {
   // TODO: We no longer init webWorkers at app level
   // TODO: We no longer init the user Manager
 
+  console.log('App Init Modes', appConfig.dataSources);
+
   if (!appConfig.modes) {
     throw new Error('No modes are defined! Check your app-config.js');
   }
@@ -89,7 +91,7 @@ function appInit(appConfigOrFunc, defaultExtensions) {
   // TODO: Remove this
   if (!appConfig.modes.length) {
     appConfig.modes.push(window.longitudinalMode);
-    // appConfig.modes.push(window.segmentationMode);
+    appConfig.modes.push(window.lanternMode);
   }
 
   return {

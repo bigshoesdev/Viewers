@@ -157,6 +157,11 @@ function PanelStudyBrowserTracking({
       UINotificationService
     );
 
+    console.log(
+      '----------------------xxxxxxxxxxxxxxx',
+      currentDisplaySets,
+      trackedSeries
+    );
     setDisplaySets(mappedDisplaySets);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -260,8 +265,12 @@ function PanelStudyBrowserTracking({
     setExpandedStudyInstanceUIDs(updatedExpandedStudyInstanceUIDs);
 
     if (!shouldCollapseStudy) {
-      const madeInClient = true
-      requestDisplaySetCreationForStudy(DisplaySetService, StudyInstanceUID, madeInClient);
+      const madeInClient = true;
+      requestDisplaySetCreationForStudy(
+        DisplaySetService,
+        StudyInstanceUID,
+        madeInClient
+      );
     }
   }
 
@@ -310,6 +319,7 @@ function PanelStudyBrowserTracking({
     }
   }, [expandedStudyInstanceUIDs, jumpToDisplaySet, tabs]);
 
+  console.log('ttttttttttttttttttttttttttt', tabs, displaySets);
   return (
     <StudyBrowser
       tabs={tabs}

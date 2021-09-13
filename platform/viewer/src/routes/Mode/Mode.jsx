@@ -31,6 +31,7 @@ async function defaultRouteInit({
         SeriesInstanceUID
       );
 
+      console.log('BBBBBBBBBBBBBBBBBBBBBBBBB, seriesMetaData', seriesMetadata);
       DisplaySetService.makeDisplaySets(seriesMetadata.instances, madeInClient);
     }
   );
@@ -41,6 +42,11 @@ async function defaultRouteInit({
     DicomMetadataStore.EVENTS.SERIES_ADDED,
     ({ StudyInstanceUID, madeInClient }) => {
       const studyMetadata = DicomMetadataStore.getStudy(StudyInstanceUID);
+      console.log(
+        '------------------------------studyMetadata',
+        studyMetadata,
+        madeInClient
+      );
       if (!madeInClient) {
         HangingProtocolService.run(studyMetadata);
       }
@@ -131,6 +137,18 @@ export default function ModeRoute({
     return ViewportGrid({ ...props, dataSource });
   }
 
+  const getAuthorizationHeader = () => {
+    const accessToken =
+      'ya29.c.Kp8BEAhPcRLV8fgykHwcCviMaGWeyiUZtSK7YdwKYZJImLP-zW8ZVjww_Y8cNY-joyza_j5fmT4aMCtTM1lrinPIQAu6lJwhHA-sCvV6VqFUPhPFtEy9pQ7F2JAw2i7iR5ri5dUKo9NR5buxcl56Pmwvf74HpMd93-JUUHXim8qT8XIsxzmWtY--3dXuHwkkxUo8SVmIZKDVFnudDwgdr88T...............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................';
+    return {
+      Authorization: `Bearer ${accessToken}`,
+    };
+  };
+
+  const handleUnauthenticated = () => {
+    console.log('handleUnauthenticated');
+  };
+
   useEffect(() => {
     // Preventing state update for unmounted component
     isMounted.current = true;
@@ -138,6 +156,11 @@ export default function ModeRoute({
       isMounted.current = false;
     };
   }, []);
+
+  UserAuthenticationService.setServiceImplementation({
+    getAuthorizationHeader,
+    handleUnauthenticated,
+  });
 
   useEffect(() => {
     // Todo: this should not be here, data source should not care about params
@@ -216,7 +239,9 @@ export default function ModeRoute({
     // Adding hanging protocols of extensions after onModeEnter since
     // it will reset the protocols
     hangingProtocols.forEach(extentionProtocols => {
-      const hangingProtocolModule = extensionManager.getModuleEntry(extentionProtocols);
+      const hangingProtocolModule = extensionManager.getModuleEntry(
+        extentionProtocols
+      );
       if (hangingProtocolModule?.protocols) {
         HangingProtocolService.addProtocols(hangingProtocolModule.protocols);
       }
@@ -280,7 +305,7 @@ export default function ModeRoute({
     <ImageViewerProvider
       // initialState={{ StudyInstanceUIDs: StudyInstanceUIDs }}
       StudyInstanceUIDs={studyInstanceUIDs}
-    // reducer={reducer}
+      // reducer={reducer}
     >
       <CombinedContextProvider>
         <DragAndDropProvider>

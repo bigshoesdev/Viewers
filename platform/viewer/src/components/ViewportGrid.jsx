@@ -26,13 +26,17 @@ function ViewerViewportGrid(props) {
     HangingProtocolService,
   } = servicesManager.services;
 
-
   const updateDisplaysetForViewports = useCallback(
-    (displaySets) => {
+    displaySets => {
       const [
         matchDetails,
         hpAlreadyApplied,
       ] = HangingProtocolService.getState();
+      console.log(
+        '------------------------------ matchDetails',
+        matchDetails,
+        displaySets
+      );
 
       if (!matchDetails.length) return;
       // Match each viewport individually
@@ -44,7 +48,7 @@ function ViewerViewportGrid(props) {
         }
 
         // if current viewport doesn't have a match
-        if (matchDetails[i] === undefined) return
+        if (matchDetails[i] === undefined) return;
 
         const { SeriesInstanceUID } = matchDetails[i];
         const matchingDisplaySet = displaySets.find(ds => {
@@ -63,8 +67,8 @@ function ViewerViewportGrid(props) {
         HangingProtocolService.setHangingProtocolAppliedForViewport(i);
       }
     },
-    [viewportGrid, numRows, numCols],
-  )
+    [viewportGrid, numRows, numCols]
+  );
 
   // Using Hanging protocol engine to match the displaySets
   useEffect(() => {
@@ -72,7 +76,8 @@ function ViewerViewportGrid(props) {
       DisplaySetService.EVENTS.DISPLAY_SETS_ADDED,
       eventData => {
         const { displaySetsAdded } = eventData;
-        updateDisplaysetForViewports(displaySetsAdded)
+        console.log('======================= viewportGrid', displaySetsAdded);
+        updateDisplaysetForViewports(displaySetsAdded);
       }
     );
 
@@ -81,16 +86,11 @@ function ViewerViewportGrid(props) {
     };
   }, [viewportGrid]);
 
-
-
   // Changing the Hanging protocol while viewing
   useEffect(() => {
     const displaySets = DisplaySetService.getActiveDisplaySets();
-    updateDisplaysetForViewports(displaySets)
-  }, [viewportGrid])
-
-
-
+    updateDisplaysetForViewports(displaySets);
+  }, [viewportGrid]);
 
   // Layout change based on hanging protocols
   useEffect(() => {
@@ -105,7 +105,6 @@ function ViewerViewportGrid(props) {
       unsubscribe();
     };
   }, [viewports]);
-
 
   useEffect(() => {
     const { unsubscribe } = MeasurementService.subscribe(
@@ -199,6 +198,10 @@ function ViewerViewportGrid(props) {
       const paneMetadata = viewports[i] || {};
       const { displaySetInstanceUID } = paneMetadata;
 
+      console.log(
+        'QQQQQQQQQQQQQQQQQQQQ getViewportPanes',
+        displaySetInstanceUID
+      );
       const displaySet =
         DisplaySetService.getDisplaySetByUID(displaySetInstanceUID) || {};
 
